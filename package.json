@@ -1,0 +1,41 @@
+{
+  "name": "@ngyewch/gpx.js",
+  "version": "0.1.0",
+  "description": "GPX parser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngyewch/gpx.js.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/gpx.js",
+      "require": "./dist/gpx.umd.cjs",
+      "script": "./dist/gpx.umd.cjs",
+      "types": "./dist/gpx.d.ts"
+    }
+  },
+  "module": "./dist/gpx.js",
+  "main": "./dist/gpx.umd.cjs",
+  "types": "./dist/gpx.d.ts",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "postbuild": "validate-package-exports --check --verify",
+    "prepublishOnly": "validate-package-exports --check --verify"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4",
+    "validate-package-exports": "0.6.1",
+    "vite": "5.4.3",
+    "vite-plugin-dts": "4.1.1"
+  },
+  "dependencies": {
+  },
+  "files": [
+    "dist/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
