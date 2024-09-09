@@ -16,3 +16,9 @@ tasks:
     deps: [ install ]
     cmds:
       - pnpm build
+
+  test:
+    desc: Test
+    deps: [ install ]
+    cmds:
+      - pnpm run test

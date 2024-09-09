@@ -22,9 +22,12 @@
   "scripts": {
     "build": "tsc --noEmit && vite build",
     "postbuild": "validate-package-exports --check --verify",
-    "prepublishOnly": "validate-package-exports --check --verify"
+    "prepublishOnly": "validate-package-exports --check --verify",
+    "test": "tap"
   },
   "devDependencies": {
+    "@tapjs/core": "4.0.0",
+    "tap": "21.0.1",
     "typescript": "5.5.4",
     "validate-package-exports": "0.6.1",
     "vite": "5.4.3",

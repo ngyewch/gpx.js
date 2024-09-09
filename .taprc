@@ -1,0 +1,14 @@
+#disable-coverage: true
+#allow-incomplete-coverage: true
+#allow-empty-coverage: true
+coverage-report:
+  - text
+browser: true
+timeout: 30
+jobs: 1
+include:
+  - "test/*.ts"
+snapshot-clean-cwd: true
+
+color: true
+reporter: base
