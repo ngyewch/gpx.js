@@ -17,8 +17,8 @@
         <cmt>example cmt</cmt>
         <desc>example desc</desc>
         <src>example src</src>
-        <url>example url</url>
-        <urlname>example urlname</urlname>
+        <url>http://link3</url>
+        <urlname>link text3</urlname>
         <sym>example sym</sym>
         <type>example type</type>
         <fix>2d</fix>
