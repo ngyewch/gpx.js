@@ -172,6 +172,30 @@ t.test('parse 1.1', t => {
                 }
             }
         }
+        if (t.not(gpx.rte, undefined)) {
+            if (t.equal(gpx.rte.length, 2)) {
+                if (t.not(gpx.rte[0], undefined)) {
+                    const rte = gpx.rte[0];
+                    // TODO
+                }
+                if (t.not(gpx.rte[1], undefined)) {
+                    const rte = gpx.rte[1];
+                    // TODO
+                }
+            }
+        }
+        if (t.not(gpx.trk, undefined)) {
+            if (t.equal(gpx.trk.length, 2)) {
+                if (t.not(gpx.trk[0], undefined)) {
+                    const trk = gpx.trk[0];
+                    // TODO
+                }
+                if (t.not(gpx.trk[1], undefined)) {
+                    const trk = gpx.trk[1];
+                    // TODO
+                }
+            }
+        }
     }
     t.end();
 });
