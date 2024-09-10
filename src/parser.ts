@@ -139,7 +139,7 @@ function parseEmail(el?: Element): string | undefined {
     if (id === undefined) {
         throw `Email@id not specified`;
     }
-    const domain = helper.getString('domain');
+    const domain = helper.getString('@domain');
     if (domain === null) {
         throw `Email@domain not specified`;
     }
@@ -367,23 +367,18 @@ class ElementHelper {
         return parseISO(text);
     }
 
-    public getFirstElement(name: string): Element | undefined {
-        const nodeList = this.el.getElementsByTagName(name);
-        if (nodeList.length === 0) {
-            return undefined;
-        }
-        return nodeList.item(0) as Element;
-    }
-
     public get<T>(name: string, mapper: (el?: Element) => T | undefined): T | undefined {
         return mapper(this.getFirstElement(name));
     }
 
     public getArray<T>(name: string, mapper: (el?: Element) => T | undefined): T[] | undefined {
-        const nodeList = this.el.getElementsByTagName(name);
         const outputs: T[] = [];
-        for (let i = 0; i < nodeList.length; i++) {
-            const el = nodeList.item(i) as Element;
+        const elements = this.getElements(name);
+        if (elements === undefined) {
+            return undefined;
+        }
+        for (let i = 0; i < elements.length; i++) {
+            const el = elements[i];
             const output = mapper(el);
             if (output !== undefined) {
                 outputs.push(output);
@@ -405,6 +400,36 @@ class ElementHelper {
             return undefined;
         }
         return getElementText(childElement);
+    }
+
+    public getFirstElement(name: string): Element | undefined {
+        const nodeList = this.el.childNodes;
+        for (let i = 0; i < nodeList.length; i++) {
+            const node = nodeList.item(i);
+            if (node instanceof Element) {
+                if (node.getQualifiedName() === name) {
+                    return node;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    public getElements(name: string): Element[] | undefined {
+        const elements: Element[] = [];
+        const nodeList = this.el.childNodes;
+        for (let i = 0; i < nodeList.length; i++) {
+            const node = nodeList.item(i);
+            if (node instanceof Element) {
+                if (node.getQualifiedName() === name) {
+                    elements.push(node);
+                }
+            }
+        }
+        if (elements.length === 0) {
+            return undefined;
+        }
+        return elements;
     }
 }
 
