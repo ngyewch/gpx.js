@@ -59,7 +59,7 @@ export interface Waypoint {
     link?: Link;
     sym?: string;
     type?: string;
-    fix?: 'none' | '2d' | '3d' | 'dgps' | 'pps';
+    fix?: string;
     sat?: number;
     hdop?: number;
     vdop?: number;

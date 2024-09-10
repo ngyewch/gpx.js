@@ -1,6 +1,6 @@
 import {DOMParser, Element} from '@xmldom/xmldom';
 import {parseISO} from 'date-fns';
-import {Bounds, Copyright, GPX, Link, Metadata, Person} from './types.js';
+import {Bounds, Copyright, GPX, Link, Metadata, Person, Waypoint} from './types.js';
 
 export function parse(s: string): GPX | undefined {
     const parser = new DOMParser();
@@ -12,67 +12,105 @@ export function parse(s: string): GPX | undefined {
     if (version === null) {
         throw 'version not specified';
     }
-    const creator = doc.documentElement.getAttribute('creator');
-    if (creator === null) {
-        throw 'creator not specified';
-    }
-    const gpx: GPX = {
-        version: version,
-        creator: creator,
-    };
-    gpx.metadata = {};
-
     if (version === '1.0') {
-        gpx.metadata = parseMetadata(version, doc.documentElement);
+        const parser = new GPX_1_0_Parser();
+        return parser.parseXML(doc.documentElement);
     } else if ((version === '1.1') || (version === '1.2')) {
-        gpx.metadata = parseMetadata(version, getElement(doc.documentElement, 'metadata'));
+        const parser = new GPX_1_1_Parser();
+        return parser.parseXML(doc.documentElement);
+    } else {
+        throw `unsupported GPX version: ${version}`;
     }
-
-    return gpx;
 }
 
-function parseMetadata(version: string, el?: Element): Metadata | undefined {
-    if (el === undefined) {
-        return undefined;
-    }
-    const metadata: Metadata = {};
-    metadata.name = getStringFromChildElement(el, 'name');
-    metadata.desc = getStringFromChildElement(el, 'desc');
-    metadata.time = parseTime(getStringFromChildElement(el, 'time'));
-    metadata.keywords = getStringFromChildElement(el, 'keywords');
-    metadata.bounds = parseBounds(getElement(el, 'bounds'));
-    if (version === '1.0') {
-        metadata.author = {
-            name: getStringFromChildElement(el, 'author'),
-            email: getStringFromChildElement(el, 'email'),
-        };
-        const url = getStringFromChildElement(el, 'url');
-        if (url !== undefined) {
-            metadata.link = {
-                href: url,
-                text: getStringFromChildElement(el, 'urlname'),
-            };
+abstract class GPX_Parser {
+    public parse(s: string): GPX | undefined {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(s, 'text/xml');
+        if (doc.documentElement === null) {
+            return undefined;
         }
-    } else if ((version === '1.1') || (version === '1.2')) {
-        metadata.author = parsePerson(getElement(el, 'author'));
-        metadata.link = parseLink(getElement(el, 'link'));
-        metadata.copyright = parseCopyright(getElement(el, 'copyright'));
+        return this.parseXML(doc.documentElement);
     }
-    return metadata;
+
+    public abstract parseXML(documentElement: Element): GPX | undefined;
 }
 
-function parseLink(el?: Element): Link | undefined {
+class GPX_1_0_Parser extends GPX_Parser {
+    public parseXML(documentElement: Element): GPX | undefined {
+        const helper = new ElementHelper(documentElement);
+        const version = helper.getString('@version');
+        if (version === undefined) {
+            throw 'version not specified';
+        }
+        if (version !== '1.0') {
+            throw 'version mismatch';
+        }
+        const creator = helper.getString('@creator');
+        if (creator === undefined) {
+            throw 'creator not specified';
+        }
+        const url = helper.getString('url')
+        return {
+            version: version,
+            creator: creator,
+            metadata: {
+                name: helper.getString('name'),
+                desc: helper.getString('desc'),
+                time: helper.getDate('time'),
+                keywords: helper.getString('keywords'),
+                bounds: helper.get('bounds', parseBounds),
+                author: {
+                    name: helper.getString('author'),
+                    email: helper.getString('email'),
+                },
+                link: (url === undefined) ? undefined : {
+                    href: url,
+                    text: helper.getString('urlname'),
+                },
+            },
+            wpt: helper.getArray('wpt', parseWaypoint_1_0)
+        };
+    }
+}
+
+class GPX_1_1_Parser extends GPX_Parser {
+    public parseXML(documentElement: Element): GPX | undefined {
+        const helper = new ElementHelper(documentElement);
+        const version = helper.getString('@version');
+        if (version === undefined) {
+            throw 'version not specified';
+        }
+        if (version !== '1.1') {
+            throw 'version mismatch';
+        }
+        const creator = helper.getString('@creator');
+        if (creator === undefined) {
+            throw 'creator not specified';
+        }
+        return {
+            version: version,
+            creator: creator,
+            metadata: helper.get('metadata', parseMetadata),
+            wpt: helper.getArray('wpt', parseWaypoint),
+        };
+    }
+}
+
+function parseMetadata(el?: Element): Metadata | undefined {
     if (el === undefined) {
         return undefined;
     }
-    const href = el.getAttribute('href');
-    if (href === null) {
-        return undefined;
-    }
+    const helper = new ElementHelper(el);
     return {
-        href: href,
-        text: getStringFromChildElement(el, 'text'),
-        type: getStringFromChildElement(el, 'type'),
+        name: helper.getString('name'),
+        desc: helper.getString('desc'),
+        time: helper.getDate('time'),
+        keywords: helper.getString('keywords'),
+        bounds: helper.get('bounds', parseBounds),
+        author: helper.get('author', parsePerson),
+        link: helper.get('link', parseLink),
+        copyright: helper.get('copyright', parseCopyright),
     };
 }
 
@@ -80,10 +118,11 @@ function parsePerson(el?: Element): Person | undefined {
     if (el === undefined) {
         return undefined;
     }
+    const helper = new ElementHelper(el);
     return {
-        name: getStringFromChildElement(el, 'name'),
-        email: parseEmail(getElement(el, 'email')),
-        link: parseLink(getElement(el, 'link')),
+        name: helper.getString('name'),
+        email: helper.get('email', parseEmail),
+        link: helper.get('link', parseLink),
     };
 }
 
@@ -91,21 +130,70 @@ function parseEmail(el?: Element): string | undefined {
     if (el === undefined) {
         return undefined;
     }
-    const id = el.getAttribute('id');
-    const domain = el.getAttribute('domain');
+    const helper = new ElementHelper(el);
+    const id = helper.getString('@id');
+    if (id === undefined) {
+        throw `Email@id not specified`;
+    }
+    const domain = helper.getString('domain');
+    if (domain === null) {
+        throw `Email@domain not specified`;
+    }
     return `${id}@${domain}`;
+}
+
+function parseLink(el?: Element): Link | undefined {
+    if (el === undefined) {
+        return undefined;
+    }
+    const helper = new ElementHelper(el);
+    const href = helper.getString('@href');
+    if (href === undefined) {
+        throw `Link@href not specified`;
+    }
+    return {
+        href: href,
+        text: helper.getString('text'),
+        type: helper.getString('type'),
+    };
+}
+
+function parseCopyright(el?: Element): Copyright | undefined {
+    if (el === undefined) {
+        return undefined;
+    }
+    const helper = new ElementHelper(el);
+    const author = helper.getString('@author');
+    if (author === undefined) {
+        throw `Copyright@author not specified`;
+    }
+    return {
+        author: author,
+        year: helper.getNumber('year'),
+        license: helper.getString('license'),
+    }
 }
 
 function parseBounds(el?: Element): Bounds | undefined {
     if (el === undefined) {
         return undefined;
     }
-    const minlat = parseNumber(el.getAttribute('minlat'));
-    const minlon = parseNumber(el.getAttribute('minlon'));
-    const maxlat = parseNumber(el.getAttribute('maxlat'));
-    const maxlon = parseNumber(el.getAttribute('maxlon'));
-    if ((minlat === undefined) || (minlon === undefined) || (maxlat === undefined) || (maxlon === undefined)) {
-        return undefined;
+    const helper = new ElementHelper(el);
+    const minlat = helper.getNumber('@minlat');
+    if (minlat === undefined) {
+        throw `Bounds@minlat not specified`;
+    }
+    const minlon = helper.getNumber('@minlon');
+    if (minlon === undefined) {
+        throw `Bounds@minlon not specified`;
+    }
+    const maxlat = helper.getNumber('@maxlat');
+    if (maxlat === undefined) {
+        throw `Bounds@maxlat not specified`;
+    }
+    const maxlon = helper.getNumber('@maxlon');
+    if (maxlon === undefined) {
+        throw `Bounds@maxlon not specified`;
     }
     return {
         minlat: minlat,
@@ -115,49 +203,119 @@ function parseBounds(el?: Element): Bounds | undefined {
     }
 }
 
-function parseCopyright(el?: Element): Copyright | undefined {
+function parseWaypoint(el?: Element, isVersion1_0?: boolean): Waypoint | undefined {
     if (el === undefined) {
         return undefined;
     }
-    const author = el.getAttribute('author');
-    if (author === null) {
-        return undefined;
+    const helper = new ElementHelper(el);
+    const lat = helper.getNumber('@lat');
+    if (lat === undefined) {
+        throw `Waypoint@lat not specified`;
     }
-    return {
-        author: author,
-        year: parseNumber(getStringFromChildElement(el, 'year')),
-        license: getStringFromChildElement(el, 'license'),
+    const lon = helper.getNumber('@lon');
+    if (lon === undefined) {
+        throw `Waypoint@lon not specified`;
     }
+    const waypoint: Waypoint = {
+        lat: lat,
+        lon: lon,
+        ele: helper.getNumber('ele'),
+        time: helper.getDate('time'),
+        magvar: helper.getNumber('magvar'),
+        geoidheight: helper.getNumber('geoidheight'),
+        name: helper.getString('name'),
+        cmt: helper.getString('cmt'),
+        desc: helper.getString('desc'),
+        src: helper.getString('src'),
+        sym: helper.getString('sym'),
+        type: helper.getString('type'),
+        fix: helper.getString('fix'),
+        sat: helper.getNumber('sat'),
+    };
+    if (isVersion1_0) {
+        const url = helper.getString('url');
+        if (url !== undefined) {
+            waypoint.link = {
+                href: url,
+                text: helper.getString('urlname'),
+            };
+        }
+    } else {
+        waypoint.link = helper.get('link', parseLink);
+    }
+    return waypoint;
 }
 
-function parseNumber(s: string | null | undefined): number | undefined {
-    if ((s === undefined) || (s === null)) {
-        return undefined;
-    }
-    return Number(s);
+function parseWaypoint_1_0(el?: Element): Waypoint | undefined {
+    return parseWaypoint(el, true);
 }
 
-function parseTime(timeString?: string): Date | undefined {
-    if (timeString === undefined) {
-        return undefined;
-    }
-    return parseISO(timeString);
-}
+class ElementHelper {
+    private readonly el: Element;
 
-function getElement(el: Element, qualifiedName: string): Element | undefined {
-    const nodeList = el.getElementsByTagName(qualifiedName);
-    if (nodeList.length === 0) {
-        return undefined;
+    constructor(el: Element) {
+        this.el = el;
     }
-    return nodeList.item(0) as Element;
-}
 
-function getStringFromChildElement(el: Element, qualifiedName: string): string | undefined {
-    const el1 = getElement(el, qualifiedName);
-    if (el1 === undefined) {
-        return undefined;
+    public getString(name: string): string | undefined {
+        return this.getText(name);
     }
-    return getElementText(el1);
+
+    public getNumber(name: string): number | undefined {
+        const text = this.getText(name);
+        if (text === undefined) {
+            return undefined;
+        }
+        return Number(text);
+    }
+
+    public getDate(name: string): Date | undefined {
+        const text = this.getText(name);
+        if (text === undefined) {
+            return undefined;
+        }
+        return parseISO(text);
+    }
+
+    public getFirstElement(name: string): Element | undefined {
+        const nodeList = this.el.getElementsByTagName(name);
+        if (nodeList.length === 0) {
+            return undefined;
+        }
+        return nodeList.item(0) as Element;
+    }
+
+    public get<T>(name: string, mapper: (el?: Element) => T | undefined): T | undefined {
+        return mapper(this.getFirstElement(name));
+    }
+
+    public getArray<T>(name: string, mapper: (el?: Element) => T | undefined): T[] | undefined {
+        const nodeList = this.el.getElementsByTagName(name);
+        const outputs: T[] = [];
+        for (let i = 0; i < nodeList.length; i++) {
+            const el = nodeList.item(i) as Element;
+            const output = mapper(el);
+            if (output !== undefined) {
+                outputs.push(output);
+            }
+        }
+        if (outputs.length === 0) {
+            return undefined;
+        }
+        return outputs;
+    }
+
+    private getText(name: string): string | undefined {
+        if (name.startsWith('@')) {
+            const text = this.el.getAttribute(name.substring(1));
+            return (text !== null) ? text : undefined;
+        }
+        const childElement = this.getFirstElement(name);
+        if (childElement === undefined) {
+            return undefined;
+        }
+        return getElementText(childElement);
+    }
 }
 
 function getElementText(el?: Element): string | undefined {
@@ -173,3 +331,4 @@ function getElementText(el?: Element): string | undefined {
     }
     return (text !== '') ? text : undefined;
 }
+
