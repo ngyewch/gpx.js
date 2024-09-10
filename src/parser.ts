@@ -235,6 +235,11 @@ function parseWaypoint(el?: Element, isVersion1_0?: boolean): Waypoint | undefin
         type: helper.getString('type'),
         fix: helper.getString('fix'),
         sat: helper.getNumber('sat'),
+        hdop: helper.getNumber('hdop'),
+        vdop: helper.getNumber('vdop'),
+        pdop: helper.getNumber('pdop'),
+        ageofdgpsdata: helper.getNumber('ageofdgpsdata'),
+        dgpsid: helper.getNumber('dgpsid'),
     };
     if (isVersion1_0) {
         const url = helper.getString('url');
