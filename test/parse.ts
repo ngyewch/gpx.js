@@ -21,8 +21,15 @@ t.test('parse 1.0', t => {
             t.equal(gpx.metadata.link.text, 'doc link text');
             t.equal(gpx.metadata.link.type, undefined);
         }
+        t.equal(gpx.metadata.time?.toISOString(), '2013-01-01T12:00:00.000Z');
+        t.equal(gpx.metadata.keywords, 'example keywords');
+        if (t.not(gpx.metadata.bounds, undefined)) {
+            t.equal(gpx.metadata.bounds.minlat, 1.2);
+            t.equal(gpx.metadata.bounds.minlon, 3.4);
+            t.equal(gpx.metadata.bounds.maxlat, 5.6);
+            t.equal(gpx.metadata.bounds.maxlon, 7.8);
+        }
     }
-
     t.end();
 });
 
@@ -51,6 +58,14 @@ t.test('parse 1.1', t => {
                 t.equal(gpx.metadata.link.href, 'https://domain.com/gpx/example');
                 t.equal(gpx.metadata.link.text, 'doc link text');
                 t.equal(gpx.metadata.link.type, 'doc link type');
+            }
+            t.equal(gpx.metadata.time?.toISOString(), '2013-01-01T12:00:00.000Z');
+            t.equal(gpx.metadata.keywords, 'example keywords');
+            if (t.not(gpx.metadata.bounds, undefined)) {
+                t.equal(gpx.metadata.bounds.minlat, 1.2);
+                t.equal(gpx.metadata.bounds.minlon, 3.4);
+                t.equal(gpx.metadata.bounds.maxlat, 5.6);
+                t.equal(gpx.metadata.bounds.maxlon, 7.8);
             }
         }
     }
