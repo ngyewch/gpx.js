@@ -1,6 +1,6 @@
 import {DOMParser, Element} from '@xmldom/xmldom';
 import {parseISO} from 'date-fns';
-import {Bounds, Copyright, GPX, Link, Metadata, Person, Waypoint} from './types.js';
+import {Bounds, Copyright, GPX, Link, Metadata, Person, Route, Track, TrackSegment, Waypoint} from './types.js';
 
 export function parse(s: string): GPX | undefined {
     const parser = new DOMParser();
@@ -69,7 +69,9 @@ class GPX_1_0_Parser extends GPX_Parser {
                     text: helper.getString('urlname'),
                 },
             },
-            wpt: helper.getArray('wpt', parseWaypoint_1_0)
+            wpt: helper.getArray('wpt', parseWaypoint_1_0),
+            rte: helper.getArray('rte', parseRoute_1_0),
+            trk: helper.getArray('trk', parseTrack_1_0),
         };
     }
 }
@@ -93,6 +95,8 @@ class GPX_1_1_Parser extends GPX_Parser {
             creator: creator,
             metadata: helper.get('metadata', parseMetadata),
             wpt: helper.getArray('wpt', parseWaypoint),
+            rte: helper.getArray('rte', parseRoute),
+            trk: helper.getArray('trk', parseTrack),
         };
     }
 }
@@ -250,6 +254,92 @@ function parseWaypoint_1_0(el?: Element): Waypoint | undefined {
     return parseWaypoint(el, true);
 }
 
+function parseRoute(el?: Element, isVersion1_0?: boolean): Route | undefined {
+    if (el === undefined) {
+        return undefined;
+    }
+    const helper = new ElementHelper(el);
+    const route: Route = {
+        name: helper.getString('name'),
+        cmt: helper.getString('cmt'),
+        desc: helper.getString('desc'),
+        src: helper.getString('src'),
+        number: helper.getNumber('number'),
+    };
+    if (isVersion1_0) {
+        const url = helper.getString('url');
+        if (url !== undefined) {
+            route.link = {
+                href: url,
+                text: helper.getString('urlname'),
+            };
+        }
+        route.rtept = helper.getArray('rtept', parseWaypoint_1_0);
+    } else {
+        route.link = helper.get('link', parseLink);
+        route.type = helper.getString('type');
+        route.rtept = helper.getArray('rtept', parseWaypoint);
+    }
+    return route;
+}
+
+function parseRoute_1_0(el?: Element): Route | undefined {
+    return parseRoute(el, true);
+}
+
+function parseTrack(el?: Element, isVersion1_0?: boolean): Track | undefined {
+    if (el === undefined) {
+        return undefined;
+    }
+    const helper = new ElementHelper(el);
+    const track: Track = {
+        name: helper.getString('name'),
+        cmt: helper.getString('cmt'),
+        desc: helper.getString('desc'),
+        src: helper.getString('src'),
+        number: helper.getNumber('number'),
+    };
+    if (isVersion1_0) {
+        const url = helper.getString('url');
+        if (url !== undefined) {
+            track.link = {
+                href: url,
+                text: helper.getString('urlname'),
+            };
+        }
+        track.trkseg = helper.getArray('trkseg', parseTrackSegment_1_0);
+    } else {
+        track.link = helper.get('link', parseLink);
+        track.type = helper.getString('type');
+        track.trkseg = helper.getArray('trkseg', parseTrackSegment);
+    }
+    return track;
+}
+
+function parseTrack_1_0(el?: Element): Track | undefined {
+    return parseTrack(el, true);
+}
+
+function parseTrackSegment(el?: Element, isVersion1_0?: boolean): TrackSegment | undefined {
+    if (el === undefined) {
+        return undefined;
+    }
+    const helper = new ElementHelper(el);
+    if (isVersion1_0) {
+        return {
+            trkpt: helper.getArray('trkpt', parseWaypoint_1_0),
+        }
+    } else {
+        return {
+            trkpt: helper.getArray('trkpt', parseWaypoint),
+        }
+    }
+}
+
+function parseTrackSegment_1_0(el?: Element): TrackSegment | undefined {
+    return parseTrackSegment(el, true);
+}
+
 class ElementHelper {
     private readonly el: Element;
 
@@ -331,4 +421,3 @@ function getElementText(el?: Element): string | undefined {
     }
     return (text !== '') ? text : undefined;
 }
-
