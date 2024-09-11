@@ -2,178 +2,143 @@ import t, {Test} from 'tap';
 import {MessageExtra} from '@tapjs/core';
 import fs from 'fs';
 import {parse} from '../src/parser.js';
-import {type Waypoint} from '../src/types.js';
+import {type Bounds, type Copyright, type GPX, type Link, type Metadata, type Person, type Waypoint} from '../src/types.js';
 
 t.test('parse 1.0', t => {
     const gpx = parse(fs.readFileSync('testdata/gpx1.0_with_all_fields.gpx').toString());
-    console.log(JSON.stringify(gpx, undefined, 2));
-    if (t.not(gpx, undefined)) {
-        if (t.not(gpx.metadata, undefined)) {
-            t.equal(gpx.metadata.name, 'example name');
-            t.equal(gpx.metadata.desc, 'example description');
-            if (t.not(gpx.metadata.author, undefined)) {
-                t.equal(gpx.metadata.author.name, 'example author');
-                t.equal(gpx.metadata.author.email, 'example@domain.com');
-                t.equal(gpx.metadata.author.link, undefined);
-            }
-            t.equal(gpx.metadata.copyright, undefined);
-            if (t.not(gpx.metadata.link, undefined)) {
-                t.equal(gpx.metadata.link.href, 'https://domain.com/gpx/example');
-                t.equal(gpx.metadata.link.text, 'doc link text');
-                t.equal(gpx.metadata.link.type, undefined);
-            }
-            t.equal(gpx.metadata.time?.toISOString(), '2013-01-01T12:00:00.000Z');
-            t.equal(gpx.metadata.keywords, 'example keywords');
-            if (t.not(gpx.metadata.bounds, undefined)) {
-                t.equal(gpx.metadata.bounds.minlat, 1.2);
-                t.equal(gpx.metadata.bounds.minlon, 3.4);
-                t.equal(gpx.metadata.bounds.maxlat, 5.6);
-                t.equal(gpx.metadata.bounds.maxlon, 7.8);
-            }
-        }
-        if (t.not(gpx.wpt, undefined)) {
-            if (t.equal(gpx.wpt.length, 2)) {
-                if (t.not(gpx.wpt[0], undefined)) {
-                    const wpt = gpx.wpt[0];
-                    t.equal(wpt.lat, 12.3);
-                    t.equal(wpt.lon, 45.6);
-                    t.equal(wpt.ele, 75.1);
-                    t.equal(wpt.magvar, 1.1);
-                    t.equal(wpt.geoidheight, 2.0);
-                    t.equal(wpt.name, 'waypoint name');
-                    t.equal(wpt.cmt, 'waypoint comment');
-                    t.equal(wpt.desc, 'waypoint description');
-                    t.equal(wpt.src, 'waypoint source');
-                    if (t.not(wpt.link, undefined)) {
-                        t.equal(wpt.link.href, 'https://domain.com/gpx/wpt/1');
-                        t.equal(wpt.link.text, 'waypoint 1');
-                        t.equal(wpt.link.type, undefined);
-                    }
-                    t.equal(wpt.sym, 'waypoint symbol');
-                    t.equal(wpt.type, 'waypoint type');
-                    t.equal(wpt.fix, '2d');
-                    t.equal(wpt.sat, 5);
-                    t.equal(wpt.hdop, 6);
-                    t.equal(wpt.vdop, 7);
-                    t.equal(wpt.pdop, 8);
-                    t.equal(wpt.ageofdgpsdata, 9);
-                    t.equal(wpt.dgpsid, 45);
-                }
-                if (t.not(gpx.wpt[1], undefined)) {
-                    const wpt = gpx.wpt[1];
-                    t.equal(wpt.lat, 13.4);
-                    t.equal(wpt.lon, 46.7);
-                    t.equal(wpt.ele, undefined);
-                    t.equal(wpt.magvar, undefined);
-                    t.equal(wpt.geoidheight, undefined);
-                    t.equal(wpt.name, undefined);
-                    t.equal(wpt.cmt, undefined);
-                    t.equal(wpt.desc, undefined);
-                    t.equal(wpt.src, undefined);
-                    t.equal(wpt.link, undefined);
-                    t.equal(wpt.sym, undefined);
-                    t.equal(wpt.type, undefined);
-                    t.equal(wpt.fix, undefined);
-                    t.equal(wpt.sat, undefined);
-                    t.equal(wpt.hdop, undefined);
-                    t.equal(wpt.vdop, undefined);
-                    t.equal(wpt.pdop, undefined);
-                    t.equal(wpt.ageofdgpsdata, undefined);
-                    t.equal(wpt.dgpsid, undefined);
-                }
-            }
-        }
-    }
+    //console.log(JSON.stringify(gpx, undefined, 2));
+    customEqual(t, gpx, {
+        version: '1.0',
+        creator: 'example creator',
+        metadata: {
+            name: 'example name',
+            desc: 'example description',
+            author: {
+                name: 'example author',
+                email: 'example@domain.com',
+            },
+            link: {
+                href: 'https://domain.com/gpx/example',
+                text: 'doc link text',
+            },
+            time: new Date('2013-01-01T12:00:00.000Z'),
+            keywords: 'example keywords',
+            bounds: {
+                minlat: 1.2,
+                minlon: 3.4,
+                maxlat: 5.6,
+                maxlon: 7.8,
+            },
+        },
+        wpt: [
+            {
+                lat: 12.3,
+                lon: 45.6,
+                ele: 75.1,
+                time: new Date('2013-01-02T02:03:00Z'),
+                magvar: 1.1,
+                geoidheight: 2.0,
+                name: 'waypoint name',
+                cmt: 'waypoint comment',
+                desc: 'waypoint description',
+                src: 'waypoint source',
+                link: {
+                    href: 'https://domain.com/gpx/wpt/1',
+                    text: 'waypoint 1',
+                },
+                sym: 'waypoint symbol',
+                type: 'waypoint type',
+                fix: '2d',
+                sat: 5,
+                hdop: 6,
+                vdop: 7,
+                pdop: 8,
+                ageofdgpsdata: 9,
+                dgpsid: 45,
+            },
+            {
+                lat: 13.4,
+                lon: 46.7,
+            },
+        ],
+        // TODO
+    }, gpxEqual);
     t.end();
 });
 
 t.test('parse 1.1', t => {
     const gpx = parse(fs.readFileSync('testdata/gpx1.1_with_all_fields.gpx').toString());
-    console.log(JSON.stringify(gpx, undefined, 2));
+    //console.log(JSON.stringify(gpx, undefined, 2));
+    customEqual(t, gpx, {
+        version: '1.1',
+        creator: 'example creator',
+        metadata: {
+            name: 'example name',
+            desc: 'example description',
+            author: {
+                name: 'example author',
+                email: 'example@domain.com',
+                link: {
+                    href: 'https://domain.com/authors/example',
+                    text: 'author link text',
+                    type: 'author link type',
+                },
+            },
+            copyright: {
+                author: 'gpx author',
+                year: 2013,
+                license: 'example license',
+            },
+            link: {
+                href: 'https://domain.com/gpx/example',
+                text: 'doc link text',
+                type: 'doc link type',
+            },
+            time: new Date('2013-01-01T12:00:00.000Z'),
+            keywords: 'example keywords',
+            bounds: {
+                minlat: 1.2,
+                minlon: 3.4,
+                maxlat: 5.6,
+                maxlon: 7.8,
+            },
+        },
+        wpt: [
+            {
+                lat: 12.3,
+                lon: 45.6,
+                ele: 75.1,
+                time: new Date('2013-01-02T02:03:00Z'),
+                magvar: 1.1,
+                geoidheight: 2.0,
+                name: 'waypoint name',
+                cmt: 'waypoint comment',
+                desc: 'waypoint description',
+                src: 'waypoint source',
+                link: {
+                    href: 'https://domain.com/gpx/wpt/1',
+                    text: 'waypoint 1',
+                    type: 'waypoint link type',
+                },
+                sym: 'waypoint symbol',
+                type: 'waypoint type',
+                fix: '2d',
+                sat: 5,
+                hdop: 6,
+                vdop: 7,
+                pdop: 8,
+                ageofdgpsdata: 9,
+                dgpsid: 45,
+            },
+            {
+                lat: 13.4,
+                lon: 46.7,
+            },
+        ],
+        // TODO
+    }, gpxEqual);
+    /*
     if (t.not(gpx, undefined)) {
-        if (t.not(gpx.metadata, undefined)) {
-            t.equal(gpx.metadata.name, 'example name');
-            t.equal(gpx.metadata.desc, 'example description');
-            if (t.not(gpx.metadata.author, undefined)) {
-                t.equal(gpx.metadata.author.name, 'example author');
-                t.equal(gpx.metadata.author.email, 'example@domain.com');
-                if (t.not(gpx.metadata.author.link, undefined)) {
-                    t.equal(gpx.metadata.author.link.href, 'https://domain.com/authors/example');
-                    t.equal(gpx.metadata.author.link.text, 'author link text');
-                    t.equal(gpx.metadata.author.link.type, 'author link type');
-                }
-            }
-            if (t.not(gpx.metadata.copyright, undefined)) {
-                t.equal(gpx.metadata.copyright.author, 'gpx author');
-                t.equal(gpx.metadata.copyright.year, 2013);
-                t.equal(gpx.metadata.copyright.license, 'example license');
-            }
-            if (t.not(gpx.metadata.link, undefined)) {
-                t.equal(gpx.metadata.link.href, 'https://domain.com/gpx/example');
-                t.equal(gpx.metadata.link.text, 'doc link text');
-                t.equal(gpx.metadata.link.type, 'doc link type');
-            }
-            t.equal(gpx.metadata.time?.toISOString(), '2013-01-01T12:00:00.000Z');
-            t.equal(gpx.metadata.keywords, 'example keywords');
-            if (t.not(gpx.metadata.bounds, undefined)) {
-                t.equal(gpx.metadata.bounds.minlat, 1.2);
-                t.equal(gpx.metadata.bounds.minlon, 3.4);
-                t.equal(gpx.metadata.bounds.maxlat, 5.6);
-                t.equal(gpx.metadata.bounds.maxlon, 7.8);
-            }
-        }
-        if (t.not(gpx.wpt, undefined)) {
-            if (t.equal(gpx.wpt.length, 2)) {
-                if (t.not(gpx.wpt[0], undefined)) {
-                    const wpt = gpx.wpt[0];
-                    t.equal(wpt.lat, 12.3);
-                    t.equal(wpt.lon, 45.6);
-                    t.equal(wpt.ele, 75.1);
-                    t.equal(wpt.magvar, 1.1);
-                    t.equal(wpt.geoidheight, 2.0);
-                    t.equal(wpt.name, 'waypoint name');
-                    t.equal(wpt.cmt, 'waypoint comment');
-                    t.equal(wpt.desc, 'waypoint description');
-                    t.equal(wpt.src, 'waypoint source');
-                    if (t.not(wpt.link, undefined)) {
-                        t.equal(wpt.link.href, 'https://domain.com/gpx/wpt/1');
-                        t.equal(wpt.link.text, 'waypoint 1');
-                        t.equal(wpt.link.type, 'waypoint link type');
-                    }
-                    t.equal(wpt.sym, 'waypoint symbol');
-                    t.equal(wpt.type, 'waypoint type');
-                    t.equal(wpt.fix, '2d');
-                    t.equal(wpt.sat, 5);
-                    t.equal(wpt.hdop, 6);
-                    t.equal(wpt.vdop, 7);
-                    t.equal(wpt.pdop, 8);
-                    t.equal(wpt.ageofdgpsdata, 9);
-                    t.equal(wpt.dgpsid, 45);
-                }
-                if (t.not(gpx.wpt[1], undefined)) {
-                    const wpt = gpx.wpt[1];
-                    t.equal(wpt.lat, 13.4);
-                    t.equal(wpt.lon, 46.7);
-                    t.equal(wpt.ele, undefined);
-                    t.equal(wpt.magvar, undefined);
-                    t.equal(wpt.geoidheight, undefined);
-                    t.equal(wpt.name, undefined);
-                    t.equal(wpt.cmt, undefined);
-                    t.equal(wpt.desc, undefined);
-                    t.equal(wpt.src, undefined);
-                    t.equal(wpt.link, undefined);
-                    t.equal(wpt.sym, undefined);
-                    t.equal(wpt.type, undefined);
-                    t.equal(wpt.fix, undefined);
-                    t.equal(wpt.sat, undefined);
-                    t.equal(wpt.hdop, undefined);
-                    t.equal(wpt.vdop, undefined);
-                    t.equal(wpt.pdop, undefined);
-                    t.equal(wpt.ageofdgpsdata, undefined);
-                    t.equal(wpt.dgpsid, undefined);
-                }
-            }
-        }
         if (t.not(gpx.rte, undefined)) {
             if (t.equal(gpx.rte.length, 2)) {
                 if (t.not(gpx.rte[0], undefined)) {
@@ -227,24 +192,176 @@ t.test('parse 1.1', t => {
             }
         }
     }
+    */
     t.end();
 });
 
-export function waypointEqual(t: Test, found: Waypoint | undefined, wanted: Waypoint | undefined, ...[msg, extra]: MessageExtra): boolean {
-    if ((found === undefined) && (wanted === undefined)) {
+function customEqual<T>(t: Test, found: T | undefined, wanted: T | undefined, equalFn: (found: T | undefined, wanted: T | undefined) => boolean, ...[msg, extra]: MessageExtra): boolean {
+    const isEqual = equalFn(found, wanted);
+    if (isEqual) {
         return t.pass({
             msg: msg,
             ...extra,
         });
-    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+    } else {
         return t.fail({
             msg: msg,
             ...extra,
             wanted: wanted,
             found: found,
         });
-    } else if ((found !== undefined) && (wanted !== undefined)){
-        t.equal(found.lat, wanted.lat);
-        t.equal(found.lon, wanted.lon);
     }
+}
+
+function arrayEqual<T>(found: T[] | undefined, wanted: T[] | undefined, equalFn: (found: T | undefined, wanted: T | undefined) => boolean): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        if (found.length !== wanted.length) {
+            return false;
+        }
+        for (let i = 0; i < found.length; i++) {
+            if (!equalFn(found[i], wanted[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+
+function linkEqual(found: Link | undefined, wanted: Link | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.href === wanted.href)
+            && (found.text === wanted.text)
+            && (found.type === wanted.type)
+            ;
+    }
+    return false;
+}
+
+function personEqual(found: Person | undefined, wanted: Person | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.name === wanted.name)
+            && (found.email === wanted.email)
+            && linkEqual(found.link, wanted.link)
+            ;
+    }
+    return false;
+
+}
+
+function copyrightEqual(found: Copyright | undefined, wanted: Copyright | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.author === wanted.author)
+            && (found.year === wanted.year)
+            && (found.license === wanted.license)
+            ;
+    }
+    return false;
+}
+
+function dateEqual(found: Date | undefined, wanted: Date | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.toISOString() === wanted.toISOString());
+    }
+    return false;
+}
+
+function boundsEqual(found: Bounds | undefined, wanted: Bounds | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.minlat === wanted.minlat)
+            && (found.minlon === wanted.minlon)
+            && (found.maxlat === wanted.maxlat)
+            && (found.maxlon === wanted.maxlon)
+            ;
+    }
+    return false;
+}
+
+function metadataEqual(found: Metadata | undefined, wanted: Metadata | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.name === wanted.name)
+            && (found.desc === wanted.desc)
+            && personEqual(found.author, wanted.author)
+            && copyrightEqual(found.copyright, wanted.copyright)
+            && linkEqual(found.link, wanted.link)
+            && dateEqual(found.time, wanted.time)
+            && (found.keywords === wanted.keywords)
+            && boundsEqual(found.bounds, wanted.bounds)
+            ;
+    }
+    return false;
+}
+
+function waypointEqual(found: Waypoint | undefined, wanted: Waypoint | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.lat === wanted.lat)
+            && (found.lon === wanted.lon)
+            && (found.ele === wanted.ele)
+            && (found.geoidheight === wanted.geoidheight)
+            && (found.name === wanted.name)
+            && (found.cmt === wanted.cmt)
+            && (found.desc === wanted.desc)
+            && (found.src === wanted.src)
+            && linkEqual(found.link, wanted.link)
+            && (found.sym === wanted.sym)
+            && (found.type === wanted.type)
+            && (found.fix === wanted.fix)
+            && (found.sat === wanted.sat)
+            && (found.hdop === wanted.hdop)
+            && (found.vdop === wanted.vdop)
+            && (found.pdop === wanted.pdop)
+            && (found.ageofdgpsdata === wanted.ageofdgpsdata)
+            && (found.dgpsid === wanted.dgpsid)
+            ;
+    }
+    return false;
+}
+
+function gpxEqual(found: GPX | undefined, wanted: GPX | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.version === wanted.version)
+            && (found.creator === wanted.creator)
+            && metadataEqual(found.metadata, wanted.metadata)
+            && arrayEqual(found.wpt, wanted.wpt, waypointEqual)
+            // TODO
+            ;
+    }
+    return false;
 }
