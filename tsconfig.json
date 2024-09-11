@@ -18,6 +18,7 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
     "plugins": [
       {
         "name": "ts-lit-plugin",
@@ -26,10 +27,13 @@
     ]
   },
   "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules/*",
-    "dist"
+    "package.json",
+    "vite.config.ts",
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.js",
+    "test/**/*.d.ts",
+    "test/**/*.ts",
+    "test/**/*.js"
   ]
 }
