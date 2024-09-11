@@ -220,7 +220,22 @@ function parseWaypoint(el?: Element, isVersion1_0?: boolean): Waypoint | undefin
     if (lon === undefined) {
         throw `Waypoint@lon not specified`;
     }
-    const waypoint: Waypoint = {
+    const getLink = (): Link | undefined => {
+        if (isVersion1_0) {
+            const url = helper.getString('url');
+            if (url !== undefined) {
+                return {
+                    href: url,
+                    text: helper.getString('urlname'),
+                };
+            } else {
+                return undefined;
+            }
+        } else {
+            return helper.get('link', parseLink);
+        }
+    };
+    return {
         lat: lat,
         lon: lon,
         ele: helper.getNumber('ele'),
@@ -231,6 +246,7 @@ function parseWaypoint(el?: Element, isVersion1_0?: boolean): Waypoint | undefin
         cmt: helper.getString('cmt'),
         desc: helper.getString('desc'),
         src: helper.getString('src'),
+        link: getLink(),
         sym: helper.getString('sym'),
         type: helper.getString('type'),
         fix: helper.getString('fix'),
@@ -241,18 +257,6 @@ function parseWaypoint(el?: Element, isVersion1_0?: boolean): Waypoint | undefin
         ageofdgpsdata: helper.getNumber('ageofdgpsdata'),
         dgpsid: helper.getNumber('dgpsid'),
     };
-    if (isVersion1_0) {
-        const url = helper.getString('url');
-        if (url !== undefined) {
-            waypoint.link = {
-                href: url,
-                text: helper.getString('urlname'),
-            };
-        }
-    } else {
-        waypoint.link = helper.get('link', parseLink);
-    }
-    return waypoint;
 }
 
 function parseWaypoint_1_0(el?: Element): Waypoint | undefined {
@@ -264,28 +268,31 @@ function parseRoute(el?: Element, isVersion1_0?: boolean): Route | undefined {
         return undefined;
     }
     const helper = new ElementHelper(el);
-    const route: Route = {
+    const getLink = (): Link | undefined => {
+        if (isVersion1_0) {
+            const url = helper.getString('url');
+            if (url !== undefined) {
+                return {
+                    href: url,
+                    text: helper.getString('urlname'),
+                };
+            } else {
+                return undefined;
+            }
+        } else {
+            return helper.get('link', parseLink);
+        }
+    };
+    return {
         name: helper.getString('name'),
         cmt: helper.getString('cmt'),
         desc: helper.getString('desc'),
         src: helper.getString('src'),
+        link: getLink(),
         number: helper.getNumber('number'),
+        type: isVersion1_0 ? undefined : helper.getString('type'),
+        rtept: isVersion1_0 ? helper.getArray('rtept', parseWaypoint_1_0) : helper.getArray('rtept', parseWaypoint),
     };
-    if (isVersion1_0) {
-        const url = helper.getString('url');
-        if (url !== undefined) {
-            route.link = {
-                href: url,
-                text: helper.getString('urlname'),
-            };
-        }
-        route.rtept = helper.getArray('rtept', parseWaypoint_1_0);
-    } else {
-        route.link = helper.get('link', parseLink);
-        route.type = helper.getString('type');
-        route.rtept = helper.getArray('rtept', parseWaypoint);
-    }
-    return route;
 }
 
 function parseRoute_1_0(el?: Element): Route | undefined {
@@ -297,28 +304,31 @@ function parseTrack(el?: Element, isVersion1_0?: boolean): Track | undefined {
         return undefined;
     }
     const helper = new ElementHelper(el);
-    const track: Track = {
+    const getLink = (): Link | undefined => {
+        if (isVersion1_0) {
+            const url = helper.getString('url');
+            if (url !== undefined) {
+                return {
+                    href: url,
+                    text: helper.getString('urlname'),
+                };
+            } else {
+                return undefined;
+            }
+        } else {
+            return helper.get('link', parseLink);
+        }
+    };
+    return {
         name: helper.getString('name'),
         cmt: helper.getString('cmt'),
         desc: helper.getString('desc'),
         src: helper.getString('src'),
+        link: getLink(),
         number: helper.getNumber('number'),
+        type: isVersion1_0 ? undefined : helper.getString('type'),
+        trkseg: isVersion1_0 ? helper.getArray('trkseg', parseTrackSegment_1_0) : helper.getArray('trkseg', parseTrackSegment_1_0),
     };
-    if (isVersion1_0) {
-        const url = helper.getString('url');
-        if (url !== undefined) {
-            track.link = {
-                href: url,
-                text: helper.getString('urlname'),
-            };
-        }
-        track.trkseg = helper.getArray('trkseg', parseTrackSegment_1_0);
-    } else {
-        track.link = helper.get('link', parseLink);
-        track.type = helper.getString('type');
-        track.trkseg = helper.getArray('trkseg', parseTrackSegment);
-    }
-    return track;
 }
 
 function parseTrack_1_0(el?: Element): Track | undefined {
