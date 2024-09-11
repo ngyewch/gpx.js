@@ -13,14 +13,14 @@
         <time>2013-01-02T02:03:00Z</time>
         <magvar>1.1</magvar>
         <geoidheight>2.0</geoidheight>
-        <name>example name</name>
-        <cmt>example cmt</cmt>
-        <desc>example desc</desc>
-        <src>example src</src>
-        <url>http://link3</url>
-        <urlname>link text3</urlname>
-        <sym>example sym</sym>
-        <type>example type</type>
+        <name>waypoint name</name>
+        <cmt>waypoint comment</cmt>
+        <desc>waypoint description</desc>
+        <src>waypoint source</src>
+        <url>https://domain.com/gpx/wpt/1</url>
+        <urlname>waypoint 1</urlname>
+        <sym>waypoint symbol</sym>
+        <type>waypoint type</type>
         <fix>2d</fix>
         <sat>5</sat>
         <hdop>6</hdop>

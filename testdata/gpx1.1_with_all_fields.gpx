@@ -32,16 +32,16 @@
         <time>2013-01-02T02:03:00Z</time>
         <magvar>1.1</magvar>
         <geoidheight>2.0</geoidheight>
-        <name>example name</name>
-        <cmt>example cmt</cmt>
-        <desc>example desc</desc>
-        <src>example src</src>
-        <link href="http://link3">
-            <text>link text3</text>
-            <type>link type3</type>
+        <name>waypoint name</name>
+        <cmt>waypoint comment</cmt>
+        <desc>waypoint description</desc>
+        <src>waypoint source</src>
+        <link href="https://domain.com/gpx/wpt/1">
+            <text>waypoint 1</text>
+            <type>waypoint link type</type>
         </link>
-        <sym>example sym</sym>
-        <type>example type</type>
+        <sym>waypoint symbol</sym>
+        <type>waypoint type</type>
         <fix>2d</fix>
         <sat>5</sat>
         <hdop>6</hdop>
@@ -57,16 +57,16 @@
     <wpt lat="13.4" lon="46.7">
     </wpt>
     <rte>
-        <name>example name</name>
-        <cmt>example cmt</cmt>
-        <desc>example desc</desc>
-        <src>example src</src>
-        <link href="http://link3">
-            <text>link text3</text>
-            <type>link type3</type>
+        <name>route 1</name>
+        <cmt>route 1 comment</cmt>
+        <desc>route 1 description</desc>
+        <src>route 1 source</src>
+        <link href="https://domain.com/gpx/rte/1">
+            <text>route 1</text>
+            <type>route link type</type>
         </link>
         <number>7</number>
-        <type>rte type</type>
+        <type>route type</type>
         <extensions>
             <rtee1>1</rtee1>
             <rtee2>2</rtee2>

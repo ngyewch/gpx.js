@@ -1,6 +1,8 @@
-import t from 'tap';
+import t, {Test} from 'tap';
+import {MessageExtra} from '@tapjs/core';
 import fs from 'fs';
 import {parse} from '../src/parser.js';
+import {type Waypoint} from '../src/types.js';
 
 t.test('parse 1.0', t => {
     const gpx = parse(fs.readFileSync('testdata/gpx1.0_with_all_fields.gpx').toString());
@@ -38,17 +40,17 @@ t.test('parse 1.0', t => {
                     t.equal(wpt.ele, 75.1);
                     t.equal(wpt.magvar, 1.1);
                     t.equal(wpt.geoidheight, 2.0);
-                    t.equal(wpt.name, 'example name');
-                    t.equal(wpt.cmt, 'example cmt');
-                    t.equal(wpt.desc, 'example desc');
-                    t.equal(wpt.src, 'example src');
+                    t.equal(wpt.name, 'waypoint name');
+                    t.equal(wpt.cmt, 'waypoint comment');
+                    t.equal(wpt.desc, 'waypoint description');
+                    t.equal(wpt.src, 'waypoint source');
                     if (t.not(wpt.link, undefined)) {
-                        t.equal(wpt.link.href, 'http://link3');
-                        t.equal(wpt.link.text, 'link text3');
+                        t.equal(wpt.link.href, 'https://domain.com/gpx/wpt/1');
+                        t.equal(wpt.link.text, 'waypoint 1');
                         t.equal(wpt.link.type, undefined);
                     }
-                    t.equal(wpt.sym, 'example sym');
-                    t.equal(wpt.type, 'example type');
+                    t.equal(wpt.sym, 'waypoint symbol');
+                    t.equal(wpt.type, 'waypoint type');
                     t.equal(wpt.fix, '2d');
                     t.equal(wpt.sat, 5);
                     t.equal(wpt.hdop, 6);
@@ -129,17 +131,17 @@ t.test('parse 1.1', t => {
                     t.equal(wpt.ele, 75.1);
                     t.equal(wpt.magvar, 1.1);
                     t.equal(wpt.geoidheight, 2.0);
-                    t.equal(wpt.name, 'example name');
-                    t.equal(wpt.cmt, 'example cmt');
-                    t.equal(wpt.desc, 'example desc');
-                    t.equal(wpt.src, 'example src');
+                    t.equal(wpt.name, 'waypoint name');
+                    t.equal(wpt.cmt, 'waypoint comment');
+                    t.equal(wpt.desc, 'waypoint description');
+                    t.equal(wpt.src, 'waypoint source');
                     if (t.not(wpt.link, undefined)) {
-                        t.equal(wpt.link.href, 'http://link3');
-                        t.equal(wpt.link.text, 'link text3');
-                        t.equal(wpt.link.type, 'link type3');
+                        t.equal(wpt.link.href, 'https://domain.com/gpx/wpt/1');
+                        t.equal(wpt.link.text, 'waypoint 1');
+                        t.equal(wpt.link.type, 'waypoint link type');
                     }
-                    t.equal(wpt.sym, 'example sym');
-                    t.equal(wpt.type, 'example type');
+                    t.equal(wpt.sym, 'waypoint symbol');
+                    t.equal(wpt.type, 'waypoint type');
                     t.equal(wpt.fix, '2d');
                     t.equal(wpt.sat, 5);
                     t.equal(wpt.hdop, 6);
@@ -176,6 +178,34 @@ t.test('parse 1.1', t => {
             if (t.equal(gpx.rte.length, 2)) {
                 if (t.not(gpx.rte[0], undefined)) {
                     const rte = gpx.rte[0];
+                    t.equal(rte.name, 'route 1');
+                    t.equal(rte.cmt, 'route 1 comment');
+                    t.equal(rte.desc, 'route 1 description');
+                    t.equal(rte.src, 'route 1 source');
+                    if (t.not(rte.link, undefined)) {
+                        t.equal(rte.link.href, 'https://domain.com/gpx/rte/1');
+                        t.equal(rte.link.text, 'route 1');
+                        t.equal(rte.link.type, 'route link type');
+                    }
+                    t.equal(rte.number, 7);
+                    t.equal(rte.type, 'route type');
+                    if (t.not(rte.rtept, undefined)) {
+                        if (t.equal(rte.rtept.length, 3)) {
+                            waypointEqual(t, rte.rtept[0], {
+                                lat: 10,
+                                lon: 20,
+                                ele: 75.1,
+                            });
+                            waypointEqual(t, rte.rtept[1], {
+                                lat: 11,
+                                lon: 21,
+                            });
+                            waypointEqual(t, rte.rtept[2], {
+                                lat: 12,
+                                lon: 22,
+                            });
+                        }
+                    }
                     // TODO
                 }
                 if (t.not(gpx.rte[1], undefined)) {
@@ -199,3 +229,22 @@ t.test('parse 1.1', t => {
     }
     t.end();
 });
+
+export function waypointEqual(t: Test, found: Waypoint | undefined, wanted: Waypoint | undefined, ...[msg, extra]: MessageExtra): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return t.pass({
+            msg: msg,
+            ...extra,
+        });
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return t.fail({
+            msg: msg,
+            ...extra,
+            wanted: wanted,
+            found: found,
+        });
+    } else if ((found !== undefined) && (wanted !== undefined)){
+        t.equal(found.lat, wanted.lat);
+        t.equal(found.lon, wanted.lon);
+    }
+}
