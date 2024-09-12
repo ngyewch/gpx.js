@@ -29,10 +29,12 @@ t.test('parse 1.0', t => {
                 name: 'example author',
                 email: 'example@domain.com',
             },
-            link: {
-                href: 'https://domain.com/gpx/example',
-                text: 'doc link text',
-            },
+            link: [
+                {
+                    href: 'https://domain.com/gpx/example',
+                    text: 'doc link text',
+                },
+            ],
             time: new Date('2013-01-01T12:00:00.000Z'),
             keywords: 'example keywords',
             bounds: {
@@ -54,10 +56,12 @@ t.test('parse 1.0', t => {
                 cmt: 'waypoint comment',
                 desc: 'waypoint description',
                 src: 'waypoint source',
-                link: {
-                    href: 'https://domain.com/gpx/wpt/1',
-                    text: 'waypoint 1',
-                },
+                link: [
+                    {
+                        href: 'https://domain.com/gpx/wpt/1',
+                        text: 'waypoint 1',
+                    },
+                ],
                 sym: 'waypoint symbol',
                 type: 'waypoint type',
                 fix: '2d',
@@ -79,10 +83,12 @@ t.test('parse 1.0', t => {
                 cmt: 'route 1 comment',
                 desc: 'route 1 description',
                 src: 'route 1 source',
-                link: {
-                    href: 'https://domain.com/gpx/rte/1',
-                    text: 'route 1',
-                },
+                link: [
+                    {
+                        href: 'https://domain.com/gpx/rte/1',
+                        text: 'route 1',
+                    },
+                ],
                 number: 7,
                 rtept: [
                     {
@@ -96,10 +102,12 @@ t.test('parse 1.0', t => {
                         cmt: 'route point 1 comment',
                         desc: 'route point 1 description',
                         src: 'route point 1 source',
-                        link: {
-                            href: 'https://domain.com/gpx/rte/1/rtept/1',
-                            text: 'route point 1',
-                        },
+                        link: [
+                            {
+                                href: 'https://domain.com/gpx/rte/1/rtept/1',
+                                text: 'route point 1',
+                            },
+                        ],
                         sym: 'route point symbol',
                         type: 'route point type',
                         fix: '3d',
@@ -117,7 +125,7 @@ t.test('parse 1.0', t => {
                     {
                         lat: 12,
                         lon: 22,
-                    }
+                    },
                 ],
             },
             {
@@ -131,7 +139,7 @@ t.test('parse 1.0', t => {
                     {
                         lat: 14,
                         lon: 24,
-                    }
+                    },
                 ],
             },
         ],
@@ -141,10 +149,12 @@ t.test('parse 1.0', t => {
                 cmt: 'track 1 comment',
                 desc: 'track 1 description',
                 src: 'track 1 source',
-                link: {
-                    href: 'https://domain.com/gpx/trk/1',
-                    text: 'track 1',
-                },
+                link: [
+                    {
+                        href: 'https://domain.com/gpx/trk/1',
+                        text: 'track 1',
+                    },
+                ],
                 number: 1,
                 trkseg: [
                     {
@@ -160,10 +170,12 @@ t.test('parse 1.0', t => {
                                 cmt: 'track point 1 comment',
                                 desc: 'track point 1 description',
                                 src: 'track point 1 source',
-                                link: {
-                                    href: 'https://domain.com/gpx/trk/1/trkpt/1',
-                                    text: 'track point 1',
-                                },
+                                link: [
+                                    {
+                                        href: 'https://domain.com/gpx/trk/1/trkpt/1',
+                                        text: 'track point 1',
+                                    },
+                                ],
                                 sym: 'track point symbol',
                                 type: 'track point type',
                                 fix: '3d',
@@ -176,12 +188,10 @@ t.test('parse 1.0', t => {
                             },
                         ],
                     },
-                    {
-                    },
+                    {},
                 ],
             },
-            {
-            },
+            {},
         ],
     }, gpxEqual);
     t.end();
@@ -211,11 +221,13 @@ t.test('parse 1.1', t => {
                 year: 2013,
                 license: 'example license',
             },
-            link: {
-                href: 'https://domain.com/gpx/example',
-                text: 'doc link text',
-                type: 'doc link type',
-            },
+            link: [
+                {
+                    href: 'https://domain.com/gpx/example',
+                    text: 'doc link text',
+                    type: 'doc link type',
+                },
+            ],
             time: new Date('2013-01-01T12:00:00.000Z'),
             keywords: 'example keywords',
             bounds: {
@@ -237,11 +249,13 @@ t.test('parse 1.1', t => {
                 cmt: 'waypoint comment',
                 desc: 'waypoint description',
                 src: 'waypoint source',
-                link: {
-                    href: 'https://domain.com/gpx/wpt/1',
-                    text: 'waypoint 1',
-                    type: 'waypoint link type',
-                },
+                link: [
+                    {
+                        href: 'https://domain.com/gpx/wpt/1',
+                        text: 'waypoint 1',
+                        type: 'waypoint link type',
+                    },
+                ],
                 sym: 'waypoint symbol',
                 type: 'waypoint type',
                 fix: '2d',
@@ -263,11 +277,13 @@ t.test('parse 1.1', t => {
                 cmt: 'route 1 comment',
                 desc: 'route 1 description',
                 src: 'route 1 source',
-                link: {
-                    href: 'https://domain.com/gpx/rte/1',
-                    text: 'route 1',
-                    type: 'route link type',
-                },
+                link: [
+                    {
+                        href: 'https://domain.com/gpx/rte/1',
+                        text: 'route 1',
+                        type: 'route link type',
+                    },
+                ],
                 number: 7,
                 type: 'route type',
                 rtept: [
@@ -282,11 +298,13 @@ t.test('parse 1.1', t => {
                         cmt: 'route point 1 comment',
                         desc: 'route point 1 description',
                         src: 'route point 1 source',
-                        link: {
-                            href: 'https://domain.com/gpx/rte/1/rtept/1',
-                            text: 'route point 1',
-                            type: 'route point link type',
-                        },
+                        link: [
+                            {
+                                href: 'https://domain.com/gpx/rte/1/rtept/1',
+                                text: 'route point 1',
+                                type: 'route point link type',
+                            },
+                        ],
                         sym: 'route point symbol',
                         type: 'route point type',
                         fix: '3d',
@@ -304,7 +322,7 @@ t.test('parse 1.1', t => {
                     {
                         lat: 12,
                         lon: 22,
-                    }
+                    },
                 ],
             },
             {
@@ -318,7 +336,7 @@ t.test('parse 1.1', t => {
                     {
                         lat: 14,
                         lon: 24,
-                    }
+                    },
                 ],
             },
         ],
@@ -328,11 +346,13 @@ t.test('parse 1.1', t => {
                 cmt: 'track 1 comment',
                 desc: 'track 1 description',
                 src: 'track 1 source',
-                link: {
-                    href: 'https://domain.com/gpx/trk/1',
-                    text: 'track 1',
-                    type: 'track link type',
-                },
+                link: [
+                    {
+                        href: 'https://domain.com/gpx/trk/1',
+                        text: 'track 1',
+                        type: 'track link type',
+                    },
+                ],
                 number: 1,
                 type: 'track type',
                 trkseg: [
@@ -349,11 +369,13 @@ t.test('parse 1.1', t => {
                                 cmt: 'track point 1 comment',
                                 desc: 'track point 1 description',
                                 src: 'track point 1 source',
-                                link: {
-                                    href: 'https://domain.com/gpx/trk/1/trkpt/1',
-                                    text: 'track point 1',
-                                    type: 'track point link type',
-                                },
+                                link: [
+                                    {
+                                        href: 'https://domain.com/gpx/trk/1/trkpt/1',
+                                        text: 'track point 1',
+                                        type: 'track point link type',
+                                    },
+                                ],
                                 sym: 'track point symbol',
                                 type: 'track point type',
                                 fix: '3d',
@@ -366,12 +388,10 @@ t.test('parse 1.1', t => {
                             },
                         ],
                     },
-                    {
-                    },
+                    {},
                 ],
             },
-            {
-            },
+            {},
         ],
     }, gpxEqual);
     t.end();
@@ -404,7 +424,7 @@ function metadataEqual(found: Metadata | undefined, wanted: Metadata | undefined
             && (found.desc === wanted.desc)
             && personEqual(found.author, wanted.author)
             && copyrightEqual(found.copyright, wanted.copyright)
-            && linkEqual(found.link, wanted.link)
+            && arrayEqual(found.link, wanted.link, linkEqual)
             && dateEqual(found.time, wanted.time)
             && (found.keywords === wanted.keywords)
             && boundsEqual(found.bounds, wanted.bounds)
@@ -496,7 +516,7 @@ function waypointEqual(found: Waypoint | undefined, wanted: Waypoint | undefined
             && (found.cmt === wanted.cmt)
             && (found.desc === wanted.desc)
             && (found.src === wanted.src)
-            && linkEqual(found.link, wanted.link)
+            && arrayEqual(found.link, wanted.link, linkEqual)
             && (found.sym === wanted.sym)
             && (found.type === wanted.type)
             && (found.fix === wanted.fix)
@@ -521,7 +541,7 @@ function routeEqual(found: Route | undefined, wanted: Route | undefined): boolea
             && (found.cmt === wanted.cmt)
             && (found.desc === wanted.desc)
             && (found.src === wanted.src)
-            && linkEqual(found.link, wanted.link)
+            && arrayEqual(found.link, wanted.link, linkEqual)
             && (found.number === wanted.number)
             && (found.type === wanted.type)
             && arrayEqual(found.rtept, wanted.rtept, waypointEqual)
@@ -540,7 +560,7 @@ function trackEqual(found: Track | undefined, wanted: Track | undefined): boolea
             && (found.cmt === wanted.cmt)
             && (found.desc === wanted.desc)
             && (found.src === wanted.src)
-            && linkEqual(found.link, wanted.link)
+            && arrayEqual(found.link, wanted.link, linkEqual)
             && (found.number === wanted.number)
             && (found.type === wanted.type)
             && arrayEqual(found.trkseg, wanted.trkseg, trackSegmentEqual)
