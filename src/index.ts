@@ -10,8 +10,10 @@ import {
     type Track,
     type TrackSegment
 } from './types.js';
+import {parse} from './parser.js';
 
 export {
+    parse,
     type GPX,
     type Metadata,
     type Person,
