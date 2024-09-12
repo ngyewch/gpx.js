@@ -1,3 +1,4 @@
 .tap/
+build/
 node_modules/
 dist/
