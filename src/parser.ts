@@ -2,6 +2,11 @@ import {DOMParser, Element} from '@xmldom/xmldom';
 import {parseISO} from 'date-fns';
 import {Bounds, Copyright, GPX, Link, Metadata, Person, Route, Track, TrackSegment, Waypoint} from './types.js';
 
+/**
+ * Parse a GPX document.
+ * @param {string} s GPX document.
+ * @returns {GPX | undefined} GPX | undefined
+ */
 export function parse(s: string): GPX | undefined {
     const parser = new DOMParser();
     const doc = parser.parseFromString(s, 'text/xml');

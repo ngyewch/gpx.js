@@ -1,3 +1,6 @@
+/**
+ * GPX object.
+ */
 export interface GPX {
     version: string;
     creator: string;
@@ -9,6 +12,9 @@ export interface GPX {
     extensions?: any;
 }
 
+/**
+ * Metadata object.
+ */
 export interface Metadata {
     name?: string;
     desc?: string;
@@ -22,24 +28,36 @@ export interface Metadata {
     extensions?: any;
 }
 
+/**
+ * Person object.
+ */
 export interface Person {
     name?: string;
     email?: string;
     link?: Link;
 }
 
+/**
+ * Link object.
+ */
 export interface Link {
     href: string;
     text?: string;
     type?: string;
 }
 
+/**
+ * Copyright object.
+ */
 export interface Copyright {
     author: string;
     year?: number;
     license?: string;
 }
 
+/**
+ * Bounds object.
+ */
 export interface Bounds {
     minlat: number;
     minlon: number;
@@ -47,6 +65,9 @@ export interface Bounds {
     maxlon: number;
 }
 
+/**
+ * Waypoint object.
+ */
 export interface Waypoint {
     lat: number;
     lon: number;
@@ -72,6 +93,9 @@ export interface Waypoint {
     extensions?: any;
 }
 
+/**
+ * Route object.
+ */
 export interface Route {
     name?: string;
     cmt?: string;
@@ -85,6 +109,9 @@ export interface Route {
     rtept?: Waypoint[];
 }
 
+/**
+ * Track object.
+ */
 export interface Track {
     name?: string;
     cmt?: string;
@@ -98,6 +125,9 @@ export interface Track {
     trkseg?: TrackSegment[];
 }
 
+/**
+ * Track segment object.
+ */
 export interface TrackSegment {
     trkpt?: Waypoint[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
