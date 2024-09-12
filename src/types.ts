@@ -20,7 +20,7 @@ export interface Metadata {
     desc?: string;
     author?: Person;
     copyright?: Copyright;
-    link?: Link;
+    link?: Link[];
     time?: Date;
     keywords?: string;
     bounds?: Bounds;
@@ -79,7 +79,7 @@ export interface Waypoint {
     cmt?: string;
     desc?: string;
     src?: string;
-    link?: Link;
+    link?: Link[];
     sym?: string;
     type?: string;
     fix?: string;
@@ -101,7 +101,7 @@ export interface Route {
     cmt?: string;
     desc?: string;
     src?: string;
-    link?: Link;
+    link?: Link[];
     number?: number;
     type?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,7 +117,7 @@ export interface Track {
     cmt?: string;
     desc?: string;
     src?: string;
-    link?: Link;
+    link?: Link[];
     number?: number;
     type?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

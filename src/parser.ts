@@ -69,10 +69,14 @@ class GPX_1_0_Parser extends GPX_Parser {
                     name: helper.getString('author'),
                     email: helper.getString('email'),
                 },
-                link: (url === undefined) ? undefined : {
-                    href: url,
-                    text: helper.getString('urlname'),
-                },
+                link: (url === undefined)
+                    ? undefined
+                    : [
+                        {
+                            href: url,
+                            text: helper.getString('urlname'),
+                        }
+                    ],
             },
             wpt: helper.getArray('wpt', parseWaypoint_1_0),
             rte: helper.getArray('rte', parseRoute_1_0),
@@ -118,7 +122,7 @@ function parseMetadata(el?: Element): Metadata | undefined {
         keywords: helper.getString('keywords'),
         bounds: helper.get('bounds', parseBounds),
         author: helper.get('author', parsePerson),
-        link: helper.get('link', parseLink),
+        link: helper.getArray('link', parseLink),
         copyright: helper.get('copyright', parseCopyright),
     };
 }
@@ -225,19 +229,21 @@ function parseWaypoint(el?: Element, isVersion1_0?: boolean): Waypoint | undefin
     if (lon === undefined) {
         throw `Waypoint@lon not specified`;
     }
-    const getLink = (): Link | undefined => {
+    const getLink = (): Link[] | undefined => {
         if (isVersion1_0) {
             const url = helper.getString('url');
             if (url !== undefined) {
-                return {
-                    href: url,
-                    text: helper.getString('urlname'),
-                };
+                return [
+                    {
+                        href: url,
+                        text: helper.getString('urlname'),
+                    }
+                ];
             } else {
                 return undefined;
             }
         } else {
-            return helper.get('link', parseLink);
+            return helper.getArray('link', parseLink);
         }
     };
     return {
@@ -273,19 +279,21 @@ function parseRoute(el?: Element, isVersion1_0?: boolean): Route | undefined {
         return undefined;
     }
     const helper = new ElementHelper(el);
-    const getLink = (): Link | undefined => {
+    const getLink = (): Link[] | undefined => {
         if (isVersion1_0) {
             const url = helper.getString('url');
             if (url !== undefined) {
-                return {
-                    href: url,
-                    text: helper.getString('urlname'),
-                };
+                return [
+                    {
+                        href: url,
+                        text: helper.getString('urlname'),
+                    }
+                ];
             } else {
                 return undefined;
             }
         } else {
-            return helper.get('link', parseLink);
+            return helper.getArray('link', parseLink);
         }
     };
     return {
@@ -309,19 +317,21 @@ function parseTrack(el?: Element, isVersion1_0?: boolean): Track | undefined {
         return undefined;
     }
     const helper = new ElementHelper(el);
-    const getLink = (): Link | undefined => {
+    const getLink = (): Link[] | undefined => {
         if (isVersion1_0) {
             const url = helper.getString('url');
             if (url !== undefined) {
-                return {
-                    href: url,
-                    text: helper.getString('urlname'),
-                };
+                return [
+                    {
+                        href: url,
+                        text: helper.getString('urlname'),
+                    }
+                ];
             } else {
                 return undefined;
             }
         } else {
-            return helper.get('link', parseLink);
+            return helper.getArray('link', parseLink);
         }
     };
     return {
