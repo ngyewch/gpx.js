@@ -111,16 +111,16 @@
         </rtept>
     </rte>
     <trk>
-        <name>example name t</name>
-        <cmt>example cmt t</cmt>
-        <desc>example desc t</desc>
-        <src>example src t</src>
-        <link href="http://trk">
-            <text>trk link</text>
-            <type>trk link type</type>
+        <name>track 1</name>
+        <cmt>track 1 comment</cmt>
+        <desc>track 1 description</desc>
+        <src>track 1 source</src>
+        <link href="https://domain.com/gpx/trk/1">
+            <text>track 1</text>
+            <type>track link type</type>
         </link>
         <number>1</number>
-        <type>t</type>
+        <type>track type</type>
         <extensions>
             <a1>2</a1>
         </extensions>
@@ -130,16 +130,16 @@
                 <time>2013-01-01T12:00:04</time>
                 <magvar>12</magvar>
                 <geoidheight>13</geoidheight>
-                <name>example name t</name>
-                <cmt>example cmt t</cmt>
-                <desc>example desc t</desc>
-                <src>example src t</src>
-                <link href="http://trkpt">
-                    <text>trkpt link</text>
-                    <type>trkpt link type</type>
+                <name>track point 1</name>
+                <cmt>track point 1 comment</cmt>
+                <desc>track point 1 description</desc>
+                <src>track point 1 source</src>
+                <link href="https://domain.com/gpx/trk/1/trkpt/1">
+                    <text>track point 1</text>
+                    <type>track point link type</type>
                 </link>
-                <sym>example sym t</sym>
-                <type>example type t</type>
+                <sym>track point symbol</sym>
+                <type>track point type</type>
                 <fix>3d</fix>
                 <sat>100</sat>
                 <hdop>101</hdop>

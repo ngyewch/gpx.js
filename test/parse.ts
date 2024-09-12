@@ -10,11 +10,14 @@ import {
     type Metadata,
     type Person,
     type Route,
+    type Track,
+    type TrackSegment,
     type Waypoint
 } from '../src/types.js';
 
 t.test('parse 1.0', t => {
     const gpx = parse(fs.readFileSync('testdata/gpx1.0_with_all_fields.gpx').toString());
+    removeNestedNullUndefined(gpx);
     //console.log(JSON.stringify(gpx, undefined, 2));
     customEqual(t, gpx, {
         version: '1.0',
@@ -132,13 +135,61 @@ t.test('parse 1.0', t => {
                 ],
             },
         ],
-        // TODO
+        trk: [
+            {
+                name: 'track 1',
+                cmt: 'track 1 comment',
+                desc: 'track 1 description',
+                src: 'track 1 source',
+                link: {
+                    href: 'https://domain.com/gpx/trk/1',
+                    text: 'track 1',
+                },
+                number: 1,
+                trkseg: [
+                    {
+                        trkpt: [
+                            {
+                                lat: 10.1,
+                                lon: -20.2,
+                                ele: 11.1,
+                                time: new Date('2013-01-01T12:00:04'),
+                                magvar: 12,
+                                geoidheight: 13,
+                                name: 'track point 1',
+                                cmt: 'track point 1 comment',
+                                desc: 'track point 1 description',
+                                src: 'track point 1 source',
+                                link: {
+                                    href: 'https://domain.com/gpx/trk/1/trkpt/1',
+                                    text: 'track point 1',
+                                },
+                                sym: 'track point symbol',
+                                type: 'track point type',
+                                fix: '3d',
+                                sat: 100,
+                                hdop: 101,
+                                vdop: 102,
+                                pdop: 103,
+                                ageofdgpsdata: 104,
+                                dgpsid: 99,
+                            },
+                        ],
+                    },
+                    {
+                    },
+                ],
+            },
+            {
+            },
+        ],
     }, gpxEqual);
     t.end();
 });
 
 t.test('parse 1.1', t => {
     const gpx = parse(fs.readFileSync('testdata/gpx1.1_with_all_fields.gpx').toString());
+    removeNestedNullUndefined(gpx);
     //console.log(JSON.stringify(gpx, undefined, 2));
     customEqual(t, gpx, {
         version: '1.1',
@@ -271,7 +322,57 @@ t.test('parse 1.1', t => {
                 ],
             },
         ],
-        // TODO
+        trk: [
+            {
+                name: 'track 1',
+                cmt: 'track 1 comment',
+                desc: 'track 1 description',
+                src: 'track 1 source',
+                link: {
+                    href: 'https://domain.com/gpx/trk/1',
+                    text: 'track 1',
+                    type: 'track link type',
+                },
+                number: 1,
+                type: 'track type',
+                trkseg: [
+                    {
+                        trkpt: [
+                            {
+                                lat: 10.1,
+                                lon: -20.2,
+                                ele: 11.1,
+                                time: new Date('2013-01-01T12:00:04'),
+                                magvar: 12,
+                                geoidheight: 13,
+                                name: 'track point 1',
+                                cmt: 'track point 1 comment',
+                                desc: 'track point 1 description',
+                                src: 'track point 1 source',
+                                link: {
+                                    href: 'https://domain.com/gpx/trk/1/trkpt/1',
+                                    text: 'track point 1',
+                                    type: 'track point link type',
+                                },
+                                sym: 'track point symbol',
+                                type: 'track point type',
+                                fix: '3d',
+                                sat: 100,
+                                hdop: 101,
+                                vdop: 102,
+                                pdop: 103,
+                                ageofdgpsdata: 104,
+                                dgpsid: 99,
+                            },
+                        ],
+                    },
+                    {
+                    },
+                ],
+            },
+            {
+            },
+        ],
     }, gpxEqual);
     t.end();
 });
@@ -287,7 +388,7 @@ function gpxEqual(found: GPX | undefined, wanted: GPX | undefined): boolean {
             && metadataEqual(found.metadata, wanted.metadata)
             && arrayEqual(found.wpt, wanted.wpt, waypointEqual)
             && arrayEqual(found.rte, wanted.rte, routeEqual)
-            // TODO
+            && arrayEqual(found.trk, wanted.trk, trackEqual)
             ;
     }
     return false;
@@ -429,6 +530,37 @@ function routeEqual(found: Route | undefined, wanted: Route | undefined): boolea
     return false;
 }
 
+function trackEqual(found: Track | undefined, wanted: Track | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return (found.name === wanted.name)
+            && (found.cmt === wanted.cmt)
+            && (found.desc === wanted.desc)
+            && (found.src === wanted.src)
+            && linkEqual(found.link, wanted.link)
+            && (found.number === wanted.number)
+            && (found.type === wanted.type)
+            && arrayEqual(found.trkseg, wanted.trkseg, trackSegmentEqual)
+            ;
+    }
+    return false;
+}
+
+function trackSegmentEqual(found: TrackSegment | undefined, wanted: TrackSegment | undefined): boolean {
+    if ((found === undefined) && (wanted === undefined)) {
+        return true;
+    } else if (((found !== undefined) && (wanted === undefined)) || ((found === undefined) && (wanted !== undefined))) {
+        return false;
+    } else if ((found !== undefined) && (wanted !== undefined)) {
+        return arrayEqual(found.trkpt, wanted.trkpt, waypointEqual)
+            ;
+    }
+    return false;
+}
+
 function customEqual<T>(t: Test, found: T | undefined, wanted: T | undefined, equalFn: (found: T | undefined, wanted: T | undefined) => boolean, ...[msg, extra]: MessageExtra): boolean {
     const isEqual = equalFn(found, wanted);
     if (isEqual) {
@@ -465,7 +597,12 @@ function arrayEqual<T>(found: T[] | undefined, wanted: T[] | undefined, equalFn:
     return false;
 }
 
-
-
-
-
+function removeNestedNullUndefined(obj: any) {
+    for (const key in obj) {
+        if ((obj[key] === null) || (obj[key] === undefined)) {
+            delete obj[key];
+        } else if (typeof obj[key] === 'object') {
+            removeNestedNullUndefined(obj[key]);
+        }
+    }
+}
