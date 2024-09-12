@@ -327,7 +327,7 @@ function parseTrack(el?: Element, isVersion1_0?: boolean): Track | undefined {
         link: getLink(),
         number: helper.getNumber('number'),
         type: isVersion1_0 ? undefined : helper.getString('type'),
-        trkseg: isVersion1_0 ? helper.getArray('trkseg', parseTrackSegment_1_0) : helper.getArray('trkseg', parseTrackSegment_1_0),
+        trkseg: isVersion1_0 ? helper.getArray('trkseg', parseTrackSegment_1_0) : helper.getArray('trkseg', parseTrackSegment),
     };
 }
 
