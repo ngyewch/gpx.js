@@ -2,12 +2,19 @@
  * GPX object.
  */
 export interface GPX {
+    /** GPX version. */
     version: string;
+    /** Name or URL of the software that created this GPX document. */
     creator: string;
+    /** Metadata. */
     metadata?: Metadata;
+    /** Waypoints. */
     wpt?: Waypoint[];
+    /** Routes. */
     rte?: Route[];
+    /** Tracks. */
     trk?: Track[];
+    /** Extensions. */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
 }
@@ -16,14 +23,23 @@ export interface GPX {
  * Metadata object.
  */
 export interface Metadata {
+    /** Name. */
     name?: string;
+    /** Description. */
     desc?: string;
+    /** The person or organization who created the file. */
     author?: Person;
+    /** Copyright and license information governing the use of the file. */
     copyright?: Copyright;
+    /** URLs associated with the location described in the file. */
     link?: Link[];
+    /** The creation date of the file. */
     time?: Date;
+    /** Keywords associated with the file. */
     keywords?: string;
+    /** Minimum and maximum coordinates which describe the extent of the coordinates in the file. */
     bounds?: Bounds;
+    /** Extensions. */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
 }
