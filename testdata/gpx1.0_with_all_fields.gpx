@@ -32,26 +32,26 @@
     <wpt lat="13.4" lon="46.7">
     </wpt>
     <rte>
-        <name>example name</name>
-        <cmt>example cmt</cmt>
-        <desc>example desc</desc>
-        <src>example src</src>
-        <url>example url</url>
-        <urlname>example urlname</urlname>
+        <name>route 1</name>
+        <cmt>route 1 comment</cmt>
+        <desc>route 1 description</desc>
+        <src>route 1 source</src>
+        <url>https://domain.com/gpx/rte/1</url>
+        <urlname>route 1</urlname>
         <number>7</number>
         <rtept lat="10" lon="20">
             <ele>75.1</ele>
             <time>2013-01-02T02:03:03Z</time>
             <magvar>1.2</magvar>
             <geoidheight>2.1</geoidheight>
-            <name>example name r</name>
-            <cmt>example cmt r</cmt>
-            <desc>example desc r</desc>
-            <src>example src r</src>
-            <url>example url r</url>
-            <urlname>example urlname r</urlname>
-            <sym>example sym r</sym>
-            <type>example type r</type>
+            <name>route point 1</name>
+            <cmt>route point 1 comment</cmt>
+            <desc>route point 1 description</desc>
+            <src>route point 1 source</src>
+            <url>https://domain.com/gpx/rte/1/rtept/1</url>
+            <urlname>route point 1</urlname>
+            <sym>route point symbol</sym>
+            <type>route point type</type>
             <fix>3d</fix>
             <sat>6</sat>
             <hdop>7</hdop>
@@ -66,8 +66,8 @@
         </rtept>
     </rte>
     <rte>
-        <name>second route</name>
-        <desc>example desc 2</desc>
+        <name>route 2</name>
+        <desc>route 2 description</desc>
         <rtept lat="13" lon="23">
         </rtept>
         <rtept lat="14" lon="24">
