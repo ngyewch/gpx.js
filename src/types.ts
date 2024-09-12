@@ -5,6 +5,7 @@ export interface GPX {
     wpt?: Waypoint[];
     rte?: Route[];
     trk?: Track[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
 }
 
@@ -17,6 +18,7 @@ export interface Metadata {
     time?: Date;
     keywords?: string;
     bounds?: Bounds;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
 }
 
@@ -66,6 +68,7 @@ export interface Waypoint {
     pdop?: number;
     ageofdgpsdata?: number;
     dgpsid?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
 }
 
@@ -77,6 +80,7 @@ export interface Route {
     link?: Link;
     number?: number;
     type?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
     rtept?: Waypoint[];
 }
@@ -89,11 +93,13 @@ export interface Track {
     link?: Link;
     number?: number;
     type?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
     trkseg?: TrackSegment[];
 }
 
 export interface TrackSegment {
     trkpt?: Waypoint[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     extensions?: any;
 }

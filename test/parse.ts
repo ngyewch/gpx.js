@@ -597,6 +597,7 @@ function arrayEqual<T>(found: T[] | undefined, wanted: T[] | undefined, equalFn:
     return false;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function removeNestedNullUndefined(obj: any) {
     for (const key in obj) {
         if ((obj[key] === null) || (obj[key] === undefined)) {
