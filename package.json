@@ -35,6 +35,7 @@
     "@tapjs/core": "4.0.0",
     "eslint": "9.10.0",
     "eslint-plugin-jsdoc": "50.2.3",
+    "gh-pages": "6.1.1",
     "globals": "15.9.0",
     "tap": "21.0.1",
     "typedoc": "0.26.7",
