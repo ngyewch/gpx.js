@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "GPX parser",
   "license": "MIT",
+  "homepage": "http://ngyewch.github.io/gpx.js/",
   "keywords": [
     "gpx"
   ],
