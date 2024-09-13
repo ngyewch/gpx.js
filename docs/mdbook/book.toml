@@ -1,0 +1,9 @@
+[book]
+authors = ["Nick Ng"]
+language = "en"
+multilingual = false
+title = "@ngyewch/gpx"
+
+[output.html]
+git-repository-url = "https://github.com/ngyewch/gpx.js"
+site-url = "/gpx.js/"
