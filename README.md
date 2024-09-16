@@ -1,3 +1,7 @@
+[![npm](https://img.shields.io/npm/v/@ngyewch/gpx)](https://www.npmjs.com/package/@ngyewch/gpx)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ngyewch/gpx.js/CI.yml)
+![GitHub last commit](https://img.shields.io/github/last-commit/ngyewch/gpx.js)
+
 # @ngyewch/gpx
 
 Javascript GPX parser.
